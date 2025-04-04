@@ -1,8 +1,113 @@
-<h2>Welcome Admin</h2>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #f3f4f7, #dfe9f3);
+            padding: 20px;
+        }
 
-<h3>Books:</h3>
-<ul>
-{% for book in books %}
-    <li>{{ book[1] }} by {{ book[2] }} – ₹{{ book[3] }} (Stock: {{ book[4] }})</li>
-{% endfor %}
-</ul>
+        h2, h3 {
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 90%;
+            margin: 20px auto;
+            background-color: #fff;
+            box-shadow: 0 0 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #34495e;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f4f6f9;
+        }
+
+        tr:hover {
+            background-color: #eef1f6;
+        }
+
+        .out-of-stock {
+            color: red;
+            font-weight: bold;
+        }
+
+        .btn-borrow {
+            padding: 6px 12px;
+            border: none;
+            background-color: #3498db;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-borrow:hover {
+            background-color: #2980b9;
+        }
+
+        .disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Welcome, User</h2>
+    <h3>Available Books</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th> <b>Title</b></th>
+                <th> <b>Author</b></th>
+                <th> <b>Price</b></th>
+                <th> <b>Stock</b></th>
+                <th> <b>Borrow</b></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in books %}
+            <tr>
+                <td>{{ book[1] }}</td>
+                <td>{{ book[2] }}</td>
+                <td>${{ book[3] }}</td>
+                <td>
+                    {% if book[4] > 0 %}
+                        {{ book[4] }}
+                    {% else %}
+                        <span class="out-of-stock">Out of Stock</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if book[4] > 0 %}
+                    <form method="post" action="/user/borrow/{{ book[0] }}">
+                        <button class="btn-borrow" type="submit">Available</button>
+                    </form>
+                    {% else %}
+                        <button class="btn-borrow disabled" disabled>Unavailable</button>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+</html>
