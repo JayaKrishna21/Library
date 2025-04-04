@@ -1,8 +1,8 @@
-<!-- user_home.html -->
-<!DOCTYPE html>
-<html>
-<head><title>User Dashboard</title></head>
-<body>
-    <h2>Welcome, User!</h2>
-</body>
-</html>
+<h2>Welcome Admin</h2>
+
+<h3>Books:</h3>
+<ul>
+{% for book in books %}
+    <li>{{ book[1] }} by {{ book[2] }} – ₹{{ book[3] }} (Stock: {{ book[4] }})</li>
+{% endfor %}
+</ul>

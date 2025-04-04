@@ -1,8 +1,47 @@
-<!-- admin_home.html -->
 <!DOCTYPE html>
 <html>
-<head><title>Admin Dashboard</title></head>
+<head>
+    <title>Admin Dashboard</title>
+</head>
 <body>
-    <h2>Welcome, Admin!</h2>
+    <h2>Welcome Admin</h2>
+
+    <!-- ✅ Add Book Button -->
+    <a href="/admin/add_book">
+        <button>Add New Book</button>
+    </a>
+
+    <h3>Books:</h3>
+    <table border="1" cellpadding="8" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Book ID</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Price ($)</th>
+                <th>Stock</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in books %}
+            <tr>
+                <td>{{ book[0] }}</td>
+                <td>{{ book[1] }}</td>
+                <td>{{ book[2] }}</td>
+                <td>{{ book[3] }}</td>
+                <td>{{ book[4] }}</td>
+                <td>
+                    <form action="/admin/delete_book/{{ book[0] }}" method="post" style="display:inline;">
+                        <button type="submit">Delete</button>
+                    </form>
+                    <a href="/admin/update_book/{{ book[0] }}">
+                        <button type="button">Update</button>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </body>
 </html>
