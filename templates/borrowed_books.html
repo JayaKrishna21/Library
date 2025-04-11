@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>User Dashboard</title>
+    <title>Borrowed Books</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -9,7 +9,7 @@
             padding: 20px;
         }
 
-        h2, h3 {
+        h2 {
             color: #2c3e50;
             text-align: center;
         }
@@ -42,9 +42,19 @@
             background-color: #eef1f6;
         }
 
-        .out-of-stock {
+        .returned {
+            color: green;
+        }
+
+        .not-returned {
             color: red;
             font-weight: bold;
+        }
+
+        .back-btn {
+            display: block;
+            text-align: center;
+            margin: 20px;
         }
 
         .btn-borrow {
@@ -60,60 +70,44 @@
         .btn-borrow:hover {
             background-color: #2980b9;
         }
-
-        .btn-borrow.disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
     </style>
 </head>
 <body>
 
-    <h2>Welcome, User</h2>
-    <div style="text-align: right; margin-right: 5%; margin-bottom: 10px;">
-        <a href="{{ url_for('view_borrowed_books') }}">
-            <button class="btn-borrow">📘 My Borrowed Books</button>
-        </a>
-    </div>
-    
-    <h3>Available Books</h3>
+    <h2>📘 My Borrowed Books</h2>
 
     <table>
         <thead>
             <tr>
-                <th>📖 Title</th>
-                <th>✍️ Author</th>
-                <th>💵 Price</th>
-                <th>📦 Stock</th>
-                <th>📚 Borrow</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Borrow Date</th>
+                <th>Status</th>
             </tr>
         </thead>
         <tbody>
-            {% for book in books %}
+            {% for book in borrowed %}
             <tr>
+                <td>{{ book[0] }}</td>
                 <td>{{ book[1] }}</td>
                 <td>{{ book[2] }}</td>
-                <td>₹{{ book[3] }}</td>
                 <td>
-                    {% if book[4] > 0 %}
-                        {{ book[4] }}
+                    {% if book[3] %}
+                        <span class="returned">Returned</span>
                     {% else %}
-                        <span class="out-of-stock">Out of Stock</span>
-                    {% endif %}
-                </td>
-                <td>
-                    {% if book[4] > 0 %}
-                        <form method="POST" action="/user/borrow/{{ book[0] }}">
-                            <button class="btn-borrow" type="submit">Borrow</button>
-                        </form>
-                    {% else %}
-                        <button class="btn-borrow disabled" disabled>Unavailable</button>
+                        <span class="not-returned">Not Returned</span>
                     {% endif %}
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+
+    <div class="back-btn">
+        <a href="{{ url_for('user_home') }}">
+            <button class="btn-borrow">⬅️ Back to Book List</button>
+        </a>
+    </div>
 
 </body>
 </html>

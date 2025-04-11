@@ -144,3 +144,60 @@ def update_book(book_id):
     book = cursor.fetchone()
     conn.close()
     return render_template("update_book.html", book=book)
+
+
+from datetime import datetime
+
+@app.route("/user/borrow/<int:book_id>", methods=["POST"])
+def borrow_book(book_id):
+    user_id = 1  # Hardcoded for now
+    borrow_date = datetime.now().strftime("%Y-%m-%d")
+
+    conn = sqlite3.connect("library.db")
+    cursor = conn.cursor()
+
+    # Fetch stock for the book
+    cursor.execute("SELECT stock FROM books WHERE book_id = ?", (book_id,))
+    result = cursor.fetchone()
+
+    if result and result[0] > 0:
+        new_stock = result[0] - 1
+
+        # Update book stock
+        cursor.execute("UPDATE books SET stock = ? WHERE book_id = ?", (new_stock, book_id))
+
+        # Delete book if stock reaches 0
+        if new_stock == 0:
+            cursor.execute("DELETE FROM books WHERE book_id = ?", (book_id,))
+
+        # Insert borrow record
+        cursor.execute("""
+            INSERT INTO borrowed_books (user_id, book_id, borrow_date)
+            VALUES (?, ?, ?)
+        """, (user_id, book_id, borrow_date))
+
+        conn.commit()
+
+    conn.close()
+    return redirect(url_for("user_home"))
+
+
+
+@app.route("/user/borrowed")
+def view_borrowed_books():
+    user_id = 1  # Hardcoded for now
+
+    conn = sqlite3.connect("library.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT b.book_title, b.author, bb.borrow_date, bb.return_date
+        FROM borrowed_books bb
+        JOIN books b ON bb.book_id = b.book_id
+        WHERE bb.user_id = ?
+    """, (user_id,))
+    
+    borrowed = cursor.fetchall()
+    conn.close()
+
+    return render_template("borrowed_books.html", borrowed=borrowed)

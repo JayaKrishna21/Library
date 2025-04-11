@@ -87,3 +87,16 @@ connection.commit()
 
 
 
+cursor.execute("""
+    CREATE TABLE IF NOT EXISTS borrowed_books (
+        borrow_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        book_id INTEGER NOT NULL,
+        borrow_date TEXT NOT NULL,
+        return_date TEXT,
+        FOREIGN KEY(user_id) REFERENCES user(user_id),
+        FOREIGN KEY(book_id) REFERENCES books(book_id)
+    )
+""")
+
+connection.commit()
