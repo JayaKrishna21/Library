@@ -201,3 +201,21 @@ def view_borrowed_books():
     conn.close()
 
     return render_template("borrowed_books.html", borrowed=borrowed)
+
+
+@app.route("/admin/borrowed")
+def admin_borrowed_books():
+    conn = sqlite3.connect("library.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT u.name, b.book_title, b.author, bb.borrow_date, bb.return_date
+        FROM borrowed_books bb
+        JOIN books b ON bb.book_id = b.book_id
+        JOIN user u ON bb.user_id = u.user_id
+        ORDER BY bb.borrow_date DESC
+    """)
+    borrowed = cursor.fetchall()
+    conn.close()
+
+    return render_template("admin_borrowed_books.html", borrowed=borrowed)

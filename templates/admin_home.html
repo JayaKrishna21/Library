@@ -5,6 +5,12 @@
 </head>
 <body>
     <h2>Welcome Admin</h2>
+    <div style="text-align: right; margin-right: 5%; margin-bottom: 10px;">
+        <a href="{{ url_for('admin_borrowed_books') }}">
+            <button class="btn-borrow">📘 View Borrowed Books</button>
+        </a>
+    </div>
+    
 
     <!-- ✅ Add Book Button -->
     <a href="/admin/add_book">
