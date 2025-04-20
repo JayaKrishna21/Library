@@ -70,6 +70,12 @@
 <body>
 
     <h2>Welcome, User</h2>
+
+    <form method="GET" action="{{ url_for('user_home') }}" style="text-align: center; margin-bottom: 20px;">
+        <input type="text" name="query" placeholder="Search by title or author" style="padding: 6px; width: 300px;">
+        <button type="submit" class="btn-borrow">Search</button>
+    </form>
+    
     <div style="text-align: right; margin-right: 5%; margin-bottom: 10px;">
         <a href="{{ url_for('view_borrowed_books') }}">
             <button class="btn-borrow">📘 My Borrowed Books</button>

@@ -54,12 +54,22 @@ def admin_home():
 
 @app.route("/user/home")
 def user_home():
+    query = request.args.get("query")
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM books")
+    if query:
+        cursor.execute("""
+            SELECT * FROM books 
+            WHERE book_title LIKE ? OR author LIKE ?
+        """, (f'%{query}%', f'%{query}%'))
+    else:
+        cursor.execute("SELECT * FROM books")
+    
     books = cursor.fetchall()
     conn.close()
     return render_template("user_home.html", books=books)
+
+
 
 @app.route("/admin/add_book", methods=["GET", "POST"])
 def add_book():
@@ -191,7 +201,7 @@ def view_borrowed_books():
     cursor = conn.cursor()
 
     cursor.execute("""
-        SELECT b.book_title, b.author, bb.borrow_date, bb.return_date
+        SELECT bb.borrow_id, b.book_title, b.author, bb.borrow_date, bb.return_date
         FROM borrowed_books bb
         JOIN books b ON bb.book_id = b.book_id
         WHERE bb.user_id = ?
@@ -203,19 +213,20 @@ def view_borrowed_books():
     return render_template("borrowed_books.html", borrowed=borrowed)
 
 
-@app.route("/admin/borrowed")
-def admin_borrowed_books():
+@app.route("/user/return/<int:borrow_id>/<int:book_id>", methods=["POST"])
+def return_book(borrow_id, book_id):
     conn = sqlite3.connect("library.db")
     cursor = conn.cursor()
 
-    cursor.execute("""
-        SELECT u.name, b.book_title, b.author, bb.borrow_date, bb.return_date
-        FROM borrowed_books bb
-        JOIN books b ON bb.book_id = b.book_id
-        JOIN user u ON bb.user_id = u.user_id
-        ORDER BY bb.borrow_date DESC
-    """)
-    borrowed = cursor.fetchall()
-    conn.close()
+    # Delete the borrow record
+    cursor.execute("DELETE FROM borrowed_books WHERE borrow_id = ?", (borrow_id,))
 
-    return render_template("admin_borrowed_books.html", borrowed=borrowed)
+    # Increase stock if book still exists
+    cursor.execute("SELECT * FROM books WHERE book_id = ?", (book_id,))
+    book = cursor.fetchone()
+    if book:
+        cursor.execute("UPDATE books SET stock = stock + 1 WHERE book_id = ?", (book_id,))
+
+    conn.commit()
+    conn.close()
+    return redirect(url_for("view_borrowed_books"))

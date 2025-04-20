@@ -82,7 +82,7 @@
                 <th>Title</th>
                 <th>Author</th>
                 <th>Borrow Date</th>
-                <th>Status</th>
+               
             </tr>
         </thead>
         <tbody>
@@ -91,13 +91,7 @@
                 <td>{{ book[0] }}</td>
                 <td>{{ book[1] }}</td>
                 <td>{{ book[2] }}</td>
-                <td>
-                    {% if book[3] %}
-                        <span class="returned">Returned</span>
-                    {% else %}
-                        <span class="not-returned">Not Returned</span>
-                    {% endif %}
-                </td>
+                
             </tr>
             {% endfor %}
         </tbody>
