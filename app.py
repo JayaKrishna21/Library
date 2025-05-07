@@ -1,10 +1,20 @@
 from flask import Flask, render_template, request, redirect, url_for
 
+
+
+
+
+
 import sqlite3
 def get_connection():
     return sqlite3.connect("library.db")
 
 app = Flask(__name__)
+
+
+from flask import session
+
+app.secret_key = "your_secret_key_here"  # Required for using sessions
 
 # Hardcoded credentials
 def user():
@@ -22,12 +32,22 @@ def user_login():
     if request.method == "POST":
         email = request.form["user_id"]
         password = request.form["password"]
-        expected_email, expected_pass = user()
-        if email == expected_email and password == expected_pass:
+
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT user_id, first_name, password FROM users WHERE email = ?", (email,))
+        user = cursor.fetchone()
+        conn.close()
+
+        if user and check_password_hash(user[2], password):
+            session["user_id"] = user[0]
+            session["user_name"] = user[1]
             return redirect(url_for("user_home"))
         else:
-            return "<h2>Invalid User Credentials</h2>"
+            return "<h3>Invalid credentials.</h3><a href='/user'>Back</a>"
+
     return render_template("user.html")
+
 
 @app.route("/admin", methods=["GET", "POST"])
 def admin_login():
@@ -54,9 +74,16 @@ def admin_home():
 
 @app.route("/user/home")
 def user_home():
+    if "user_id" not in session:
+        return redirect(url_for("user_login"))
+
+    user_id = session["user_id"]
+    user_name = session.get("user_name", "User")
+
     query = request.args.get("query")
     conn = get_connection()
     cursor = conn.cursor()
+
     if query:
         cursor.execute("""
             SELECT * FROM books 
@@ -67,7 +94,9 @@ def user_home():
     
     books = cursor.fetchall()
     conn.close()
-    return render_template("user_home.html", books=books)
+
+    return render_template("user_home.html", books=books, user_name=user_name)
+
 
 
 
@@ -230,3 +259,44 @@ def return_book(borrow_id, book_id):
     conn.commit()
     conn.close()
     return redirect(url_for("view_borrowed_books"))
+
+
+
+from werkzeug.security import generate_password_hash, check_password_hash
+
+@app.route("/signup", methods=["GET", "POST"])
+def signup():
+    if request.method == "POST":
+        fname = request.form["first_name"]
+        lname = request.form["last_name"]
+        email = request.form["email"]
+        password = request.form["password"]
+        confirm = request.form["confirm_password"]
+
+        if password != confirm:
+            return render_template("signup.html", error="Passwords do not match.")
+
+        hashed_password = generate_password_hash(password)
+
+        conn = get_connection()
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""
+                INSERT INTO users (first_name, last_name, email, password)
+                VALUES (?, ?, ?, ?)""", (fname, lname, email, hashed_password))
+            conn.commit()
+        except sqlite3.IntegrityError:
+            return render_template("signup.html", error="Email already registered.")
+        finally:
+            conn.close()
+
+        return redirect(url_for("user_login"))
+    
+    return render_template("signup.html")
+
+
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("front_page"))

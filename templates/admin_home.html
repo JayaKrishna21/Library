@@ -1,25 +1,20 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Admin Dashboard</title>
-</head>
-<body>
-    <h2>Welcome Admin</h2>
-    <div style="text-align: right; margin-right: 5%; margin-bottom: 10px;">
-        <a href="{{ url_for('admin_borrowed_books') }}">
-            <button class="btn-borrow">📘 View Borrowed Books</button>
-        </a>
-    </div>
-    
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<h2 class="mb-4">Welcome Admin</h2>
 
-    <!-- ✅ Add Book Button -->
-    <a href="/admin/add_book">
-        <button>Add New Book</button>
-    </a>
+<div class="d-flex justify-content-end mb-3">
+    <a href="{{ url_for('view_borrowed_books') }}" class="btn btn-info">📘 View Borrowed Books</a>
+</div>
 
-    <h3>Books:</h3>
-    <table border="1" cellpadding="8" cellspacing="0">
-        <thead>
+<div class="mb-3">
+    <a href="/admin/add_book" class="btn btn-success">Add New Book</a>
+</div>
+
+<h3>Books</h3>
+<div class="table-responsive">
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
             <tr>
                 <th>Book ID</th>
                 <th>Title</th>
@@ -39,15 +34,13 @@
                 <td>{{ book[4] }}</td>
                 <td>
                     <form action="/admin/delete_book/{{ book[0] }}" method="post" style="display:inline;">
-                        <button type="submit">Delete</button>
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                     </form>
-                    <a href="/admin/update_book/{{ book[0] }}">
-                        <button type="button">Update</button>
-                    </a>
+                    <a href="/admin/update_book/{{ book[0] }}" class="btn btn-warning btn-sm">Update</a>
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-</body>
-</html>
+</div>
+{% endblock %}

@@ -1,14 +1,36 @@
-<!DOCTYPE html>
-<html>
-<head><title>Update Book</title></head>
-<body>
-    <h2>Update Book</h2>
-    <form method="post">
-        Title: <input type="text" name="title" value="{{ book[1] }}"><br>
-        Author: <input type="text" name="author" value="{{ book[2] }}"><br>
-        Price: <input type="number" step="0.01" name="price" value="{{ book[3] }}"><br>
-        Stock: <input type="number" name="stock" value="{{ book[4] }}"><br>
-        <input type="submit" value="Update">
-    </form>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Update Book{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm p-4">
+            <h2 class="text-center mb-4">Update Book</h2>
+            <form method="post">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title:</label>
+                    <input type="text" name="title" id="title" class="form-control" value="{{ book[1] }}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="author" class="form-label">Author:</label>
+                    <input type="text" name="author" id="author" class="form-control" value="{{ book[2] }}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="price" class="form-label">Price ($):</label>
+                    <input type="number" name="price" step="0.01" id="price" class="form-control" value="{{ book[3] }}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="stock" class="form-label">Stock:</label>
+                    <input type="number" name="stock" id="stock" class="form-control" value="{{ book[4] }}" required>
+                </div>
+
+                <button type="submit" class="btn btn-warning w-100">Update Book</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

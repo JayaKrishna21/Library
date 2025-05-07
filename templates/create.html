@@ -1,9 +1,25 @@
-<!DOCTYPE html>
-<html>
-<head><title>Login</title></head>
-<body>
-    <h2>Select Role</h2>
-    <a href="/user"><button>User Login</button></a>
-    <a href="/admin"><button>Admin Login</button></a>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Welcome{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Library Management System</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="card text-center shadow p-4">
+                <h3>👤 User</h3>
+                <p>Access and borrow books</p>
+                <a href="/user" class="btn btn-primary mt-2">Login as User</a>
+                <p class="mt-2 mb-0">New here? <a href="/signup">Sign Up</a></p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center shadow p-4">
+                <h3>🛠️ Admin</h3>
+                <p>Manage books and users</p>
+                <a href="/admin" class="btn btn-dark mt-2">Login as Admin</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

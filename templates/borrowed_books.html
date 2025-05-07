@@ -1,107 +1,32 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Borrowed Books</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(to right, #f3f4f7, #dfe9f3);
-            padding: 20px;
-        }
+{% extends "base.html" %}
 
-        h2 {
-            color: #2c3e50;
-            text-align: center;
-        }
+{% block title %}Borrowed Books{% endblock %}
 
-        table {
-            border-collapse: collapse;
-            width: 90%;
-            margin: 20px auto;
-            background-color: #fff;
-            box-shadow: 0 0 8px rgba(0,0,0,0.1);
-            border-radius: 8px;
-            overflow: hidden;
-        }
+{% block content %}
+<h2 class="text-center mb-4">📘 My Borrowed Books</h2>
 
-        th, td {
-            padding: 12px 15px;
-            text-align: center;
-        }
-
-        th {
-            background-color: #34495e;
-            color: white;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f4f6f9;
-        }
-
-        tr:hover {
-            background-color: #eef1f6;
-        }
-
-        .returned {
-            color: green;
-        }
-
-        .not-returned {
-            color: red;
-            font-weight: bold;
-        }
-
-        .back-btn {
-            display: block;
-            text-align: center;
-            margin: 20px;
-        }
-
-        .btn-borrow {
-            padding: 6px 12px;
-            border: none;
-            background-color: #3498db;
-            color: white;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn-borrow:hover {
-            background-color: #2980b9;
-        }
-    </style>
-</head>
-<body>
-
-    <h2>📘 My Borrowed Books</h2>
-
-    <table>
-        <thead>
+<div class="table-responsive">
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark text-center">
             <tr>
                 <th>Title</th>
                 <th>Author</th>
                 <th>Borrow Date</th>
-               
             </tr>
         </thead>
         <tbody>
             {% for book in borrowed %}
-            <tr>
+            <tr class="text-center">
                 <td>{{ book[0] }}</td>
                 <td>{{ book[1] }}</td>
                 <td>{{ book[2] }}</td>
-                
             </tr>
             {% endfor %}
         </tbody>
     </table>
+</div>
 
-    <div class="back-btn">
-        <a href="{{ url_for('user_home') }}">
-            <button class="btn-borrow">⬅️ Back to Book List</button>
-        </a>
-    </div>
-
-</body>
-</html>
+<div class="text-center mt-4">
+    <a href="{{ url_for('user_home') }}" class="btn btn-primary">⬅️ Back to Book List</a>
+</div>
+{% endblock %}

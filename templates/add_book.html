@@ -1,24 +1,37 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Add Book</title>
-</head>
-<body>
-    <h2>Add a New Book</h2>
-    <form method="POST" action="/admin/add_book">
-        <label>Title:</label><br>
-        <input type="text" name="title" required><br><br>
+<!-- templates/add_book.html -->
+{% extends "base.html" %}
 
-        <label>Author:</label><br>
-        <input type="text" name="author" required><br><br>
+{% block title %}Add Book{% endblock %}
 
-        <label>Price:</label><br>
-        <input type="number" name="price" step="0.01" required><br><br>
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm p-4">
+            <h2 class="text-center mb-4">Add a New Book</h2>
+            <form method="POST" action="/admin/add_book">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title:</label>
+                    <input type="text" name="title" id="title" class="form-control" required>
+                </div>
 
-        <label>Stock:</label><br>
-        <input type="number" name="stock" required><br><br>
+                <div class="mb-3">
+                    <label for="author" class="form-label">Author:</label>
+                    <input type="text" name="author" id="author" class="form-control" required>
+                </div>
 
-        <input type="submit" value="Add Book">
-    </form>
-</body>
-</html>
+                <div class="mb-3">
+                    <label for="price" class="form-label">Price ($):</label>
+                    <input type="number" name="price" step="0.01" id="price" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="stock" class="form-label">Stock:</label>
+                    <input type="number" name="stock" id="stock" class="form-control" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Add Book</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
